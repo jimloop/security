@@ -1,0 +1,53 @@
+server:
+  port: 8111
+
+spring:
+  security:
+    user:
+      name: root
+      password: 123456
+  shardingsphere:
+    datasource:
+      names: master,slave0
+      common:
+        type: com.alibaba.druid.pool.DruidDataSource
+        initial-size: 1
+        min-idle: 1
+        max-active: 20
+        max-wait: 60000
+        time-between-eviction-runs-millis: 60000
+        min-evictable-idle-time-millis: 300000
+        validation-query: select 'x'
+        test-while-idle: true
+        test-on-borrow: false
+        test-on-return: false
+        pool-prepared-statements: true
+        max-pool-prepared-statement-per-connection-size: 20
+        filters: stat
+        connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+      master:
+        url: jdbc:mysql://192.168.21.129:3306/test01?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC&allowMultiQueries=true
+        username: root
+        password: 123456
+      slave0:
+        url: jdbc:mysql://192.168.21.129:3306/test01?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC&allowMultiQueries=true
+        username: root
+        password: 123456
+    rules:
+      replica-query:
+        data-sources:
+          master:
+            primary-data-source-name: master
+            replica-data-source-names: slave0
+            load-balancer-name: taishan-basic
+        load-balancers:
+          taishan-basic:
+            type: RANDOM
+            props:
+              test: test
+    props:
+      sql-show: true
+
+mybatis:
+  mapper-locations: classpath:mapper/*Mapper.xml
+  type-aliases-package: com.jim.security.entity
