@@ -2,6 +2,13 @@ server:
   port: 8111
 
 spring:
+  thymeleaf:
+    cache: false
+    prefix: classpath:/static/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+    content-type: text/html
   security:
     user:
       name: root
